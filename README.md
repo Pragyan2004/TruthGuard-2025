@@ -6,32 +6,42 @@ This repository contains full model training scripts, TF-IDF + Logistic Regressi
 ---
 # Project Structure
 
-TruthGard-2025
+| Model | Description | Purpose |
+|-------|-------------|----------|
+| Logistic Regression | Traditional ML Model with TF-IDF | Fast & baseline prediction |
+| LSTM | Sequential Deep Learning Model | Detects deeper contextual text patterns |
+| TF-IDF Vectorizer | Converts text → numerical vectors | Used for Logistic Regression model |
+| Tokenizer | Text tokenizing for deep learning models | Used for LSTM model |
+| all_models.pkl | Combined trained model | For multi-model predictions |
+
+---
+
+📦 Fake-News-Detection
 │
-├── app.py    
+├── app.py # Flask Application
+├── fake_news_training.py # Training Script/Notebook
 │
-├── templates/
-│   ├── index.html
-│   ├── detector.html
-│   ├── analysis.html
-│   ├── about.html
-│   └── contact.html
+├── templates/ # UI Pages
+│ ├── index.html
+│ ├── detector.html
+│ ├── analysis.html
+│ ├── about.html
+│ └── contact.html
 │
-├── static/
-│   ├── css/
-│   └── js/
+├── static/ # Static Assets
+│ ├── css/
+│ └── js/
 │
-├── Fake.csv 
-├── True.csv 
+├── Fake.csv # Fake News Dataset
+├── True.csv # Real News Dataset
 │
 ├── logistic_regression_model.pkl
 ├── tfidf_vectorizer.pkl
 ├── lstm_model.h5
 ├── tokenizer.pkl
-├── all_models.pkl
+├── all_models.pkl # Saved trained Models
 │
-└── README.md
-
+└── README.md # Documentation
 ---
 # Features
 

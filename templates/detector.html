@@ -1,0 +1,216 @@
+{% extends "base.html" %}
+
+{% block title %}News Detector - Fake News Detector 2025{% endblock %}
+
+{% block content %}
+<div class="detector-container">
+    <div class="container">
+        <div class="detector-header">
+            <h1>AI News Detector</h1>
+            <p>Paste any news article text below to verify its authenticity using our advanced AI system</p>
+        </div>
+
+        <div class="detector-content">
+            <div class="input-section">
+                <div class="input-header">
+                    <h3>Enter News Text</h3>
+                    <div class="model-selector">
+                        <label for="model-type">Analysis Model:</label>
+                        <select id="model-type">
+                            <option value="logistic">Logistic Regression (Recommended)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <textarea id="news-text" placeholder="Paste news article text here... (Minimum 50 characters for accurate analysis)"></textarea>
+                
+                <div class="input-footer">
+                    <div class="text-stats">
+                        <span id="char-count">0</span> characters
+                    </div>
+                    <button id="analyze-btn" class="btn btn-primary">
+                        <i class="fas fa-search"></i>
+                        Analyze News
+                    </button>
+                </div>
+            </div>
+
+            <div class="results-section" id="results-section" style="display: none;">
+                <div class="results-header">
+                    <h3>Analysis Results</h3>
+                    <div class="confidence-badge" id="confidence-badge">
+                        <span id="confidence-score">0%</span> Confidence
+                    </div>
+                </div>
+                
+                <div class="result-card" id="result-card">
+                    <div class="result-icon">
+                        <i class="fas fa-question-circle"></i>
+                    </div>
+                    <div class="result-content">
+                        <h4 id="prediction-text">Analyzing...</h4>
+                        <p id="prediction-description">Our AI is processing the content</p>
+                    </div>
+                </div>
+
+                <div class="probability-chart">
+                    <h4>Probability Distribution</h4>
+                    <div class="probability-bars">
+                        <div class="probability-bar fake-prob">
+                            <div class="bar-label">
+                                <span>Fake News</span>
+                                <span id="fake-percent">0%</span>
+                            </div>
+                            <div class="bar-container">
+                                <div class="bar-fill" id="fake-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="probability-bar real-prob">
+                            <div class="bar-label">
+                                <span>Real News</span>
+                                <span id="real-percent">0%</span>
+                            </div>
+                            <div class="bar-container">
+                                <div class="bar-fill" id="real-bar" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analysis-details">
+                    <h4>Analysis Details</h4>
+                    <div class="details-grid">
+                        <div class="detail-item">
+                            <span class="detail-label">Model Used:</span>
+                            <span class="detail-value" id="model-used">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Processing Time:</span>
+                            <span class="detail-value" id="processing-time">-</span>
+                        </div>
+                        <div class="detail-item">
+                            <span class="detail-label">Text Length:</span>
+                            <span class="detail-value" id="text-length">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="examples-section">
+                <h3>Try These Examples</h3>
+                <div class="examples-grid">
+                    <div class="example-card" data-text="Breaking: Scientists discover revolutionary cure that makes all diseases disappear instantly! This miracle treatment is being hidden by pharmaceutical companies!">
+                        <div class="example-header">
+                            <span class="example-label fake">Fake News Example</span>
+                        </div>
+                        <p>Revolutionary cure discovered that eliminates all diseases instantly...</p>
+                        <button class="btn-example">Use This Example</button>
+                    </div>
+                    <div class="example-card" data-text="The Federal Reserve announced today that interest rates will remain unchanged for the next quarter, citing stable economic growth and controlled inflation rates across major markets.">
+                        <div class="example-header">
+                            <span class="example-label real">Real News Example</span>
+                        </div>
+                        <p>Federal Reserve keeps interest rates unchanged amid stable economic growth...</p>
+                        <button class="btn-example">Use This Example</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const newsText = document.getElementById('news-text');
+    const analyzeBtn = document.getElementById('analyze-btn');
+    const resultsSection = document.getElementById('results-section');
+    const charCount = document.getElementById('char-count');
+    const exampleButtons = document.querySelectorAll('.btn-example');
+    newsText.addEventListener('input', function() {
+        const count = this.value.length;
+        charCount.textContent = count;
+        analyzeBtn.disabled = count < 50;
+    });
+    exampleButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const exampleText = this.closest('.example-card').getAttribute('data-text');
+            newsText.value = exampleText;
+            newsText.dispatchEvent(new Event('input'));
+        });
+    });
+    analyzeBtn.addEventListener('click', function() {
+        const text = newsText.value.trim();
+        const modelType = document.getElementById('model-type').value;
+
+        if (text.length < 50) {
+            alert('Please enter at least 50 characters for accurate analysis.');
+            return;
+        }
+        analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+        analyzeBtn.disabled = true;
+
+        const startTime = performance.now();
+        fetch('/predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                text: text,
+                model_type: modelType
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const endTime = performance.now();
+            const processingTime = ((endTime - startTime) / 1000).toFixed(2);
+
+            if (data.status === 'success') {
+                displayResults(data, processingTime, text.length);
+            } else {
+                throw new Error(data.error || 'Analysis failed');
+            }
+        })
+        .catch(error => {
+            alert('Error: ' + error.message);
+        })
+        .finally(() => {
+            analyzeBtn.innerHTML = '<i class="fas fa-search"></i> Analyze News';
+            analyzeBtn.disabled = false;
+        });
+    });
+
+    function displayResults(data, processingTime, textLength) {
+        resultsSection.style.display = 'block';
+        const isFake = data.prediction === 'Fake News';
+        const resultCard = document.getElementById('result-card');
+        const predictionText = document.getElementById('prediction-text');
+        const predictionDesc = document.getElementById('prediction-description');
+
+        resultCard.className = `result-card ${isFake ? 'fake-result' : 'real-result'}`;
+        predictionText.textContent = data.prediction;
+        predictionText.innerHTML = `${isFake ? '<i class="fas fa-times-circle"></i>' : '<i class="fas fa-check-circle"></i>'} ${data.prediction}`;
+        
+        predictionDesc.textContent = isFake 
+            ? 'This content shows characteristics commonly associated with fake news.'
+            : 'This content appears to be legitimate news based on our analysis.';
+        const fakePercent = (data.fake_probability * 100).toFixed(1);
+        const realPercent = (data.real_probability * 100).toFixed(1);
+
+        document.getElementById('fake-percent').textContent = fakePercent + '%';
+        document.getElementById('real-percent').textContent = realPercent + '%';
+        document.getElementById('fake-bar').style.width = fakePercent + '%';
+        document.getElementById('real-bar').style.width = realPercent + '%';
+        const confidencePercent = (data.confidence * 100).toFixed(1);
+        document.getElementById('confidence-score').textContent = confidencePercent + '%';
+        document.getElementById('confidence-badge').className = `confidence-badge ${confidencePercent > 80 ? 'high' : confidencePercent > 60 ? 'medium' : 'low'}`;
+        document.getElementById('model-used').textContent = data.model_used;
+        document.getElementById('processing-time').textContent = processingTime + 's';
+        document.getElementById('text-length').textContent = textLength + ' characters';
+        resultsSection.scrollIntoView({ behavior: 'smooth' });
+    }
+});
+</script>
+{% endblock %}

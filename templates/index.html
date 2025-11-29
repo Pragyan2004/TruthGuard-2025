@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Fake News Detector 2025{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-container">
+        <div class="hero-content">
+            <h1 class="hero-title">AI-Powered <span class="gradient-text">Fake News Detection</span></h1>
+            <p class="hero-description">
+                Advanced machine learning system that analyzes news content with 95%+ accuracy. 
+                Protect yourself from misinformation with cutting-edge AI technology.
+            </p>
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Accuracy</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Articles Analyzed</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">0.2s</div>
+                    <div class="stat-label">Detection Time</div>
+                </div>
+            </div>
+            <div class="hero-buttons">
+                <a href="{{ url_for('detector') }}" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                    Analyze News
+                </a>
+                <a href="{{ url_for('about') }}" class="btn btn-secondary">
+                    <i class="fas fa-info-circle"></i>
+                    Learn More
+                </a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="ai-visualization">
+                <div class="neural-network">
+                    <div class="node-layer">
+                        <div class="node active"></div>
+                        <div class="node"></div>
+                        <div class="node active"></div>
+                    </div>
+                    <div class="connection-layer">
+                        <div class="connection"></div>
+                        <div class="connection"></div>
+                        <div class="connection"></div>
+                    </div>
+                    <div class="node-layer">
+                        <div class="node"></div>
+                        <div class="node active"></div>
+                    </div>
+                </div>
+                <div class="result-display">
+                    <div class="result real">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Real News</span>
+                    </div>
+                    <div class="result fake">
+                        <i class="fas fa-times-circle"></i>
+                        <span>Fake News</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features">
+    <div class="container">
+        <h2 class="section-title">Advanced Detection Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>Machine Learning</h3>
+                <p>Advanced algorithms trained on thousands of verified news articles for maximum accuracy.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-language"></i>
+                </div>
+                <h3>NLP Analysis</h3>
+                <p>Natural Language Processing to understand context, sentiment, and writing patterns.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3>Real-time Detection</h3>
+                <p>Instant analysis with results delivered in milliseconds for quick verification.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Pattern Recognition</h3>
+                <p>Identifies common patterns in fake news including sensationalism and misinformation.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="how-it-works">
+    <div class="container">
+        <h2 class="section-title">How It Works</h2>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>Input News Text</h3>
+                    <p>Paste or type the news article you want to verify</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>AI Analysis</h3>
+                    <p>Our system processes the text using advanced ML models</p>
+                </div>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>Get Results</h3>
+                    <p>Receive instant verification with confidence scores</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

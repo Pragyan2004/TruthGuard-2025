@@ -1,0 +1,304 @@
+{% extends "base.html" %}
+
+{% block title %}Analysis - Fake News Detector 2025{% endblock %}
+
+{% block content %}
+<div class="analysis-container">
+    <div class="container">
+        <div class="analysis-header">
+            <h1>Batch Analysis</h1>
+            <p>Analyze multiple news articles simultaneously and get comprehensive insights</p>
+        </div>
+
+        <div class="analysis-content">
+            <div class="batch-input-section">
+                <h3>Multiple Article Analysis</h3>
+                <p>Enter multiple news articles (one per line) for batch processing</p>
+                
+                <textarea id="batch-text" placeholder="Enter first news article...
+Enter second news article...
+Enter third news article..."></textarea>
+                
+                <div class="batch-controls">
+                    <div class="article-count">
+                        <span id="article-count">0</span> articles
+                    </div>
+                    <button id="batch-analyze-btn" class="btn btn-primary">
+                        <i class="fas fa-chart-bar"></i>
+                        Analyze All Articles
+                    </button>
+                </div>
+            </div>
+
+            <div class="batch-results" id="batch-results" style="display: none;">
+                <div class="results-summary">
+                    <h3>Analysis Summary</h3>
+                    <div class="summary-cards">
+                        <div class="summary-card total">
+                            <div class="summary-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="summary-content">
+                                <div class="summary-number" id="total-articles">0</div>
+                                <div class="summary-label">Total Articles</div>
+                            </div>
+                        </div>
+                        <div class="summary-card real">
+                            <div class="summary-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="summary-content">
+                                <div class="summary-number" id="real-articles">0</div>
+                                <div class="summary-label">Real News</div>
+                            </div>
+                        </div>
+                        <div class="summary-card fake">
+                            <div class="summary-icon">
+                                <i class="fas fa-times-circle"></i>
+                            </div>
+                            <div class="summary-content">
+                                <div class="summary-number" id="fake-articles">0</div>
+                                <div class="summary-label">Fake News</div>
+                            </div>
+                        </div>
+                        <div class="summary-card accuracy">
+                            <div class="summary-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <div class="summary-content">
+                                <div class="summary-number" id="avg-confidence">0%</div>
+                                <div class="summary-label">Avg Confidence</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-charts">
+                    <div class="chart-container">
+                        <h4>Distribution Analysis</h4>
+                        <div class="chart">
+                            <canvas id="distributionChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <h4>Confidence Levels</h4>
+                        <div class="chart">
+                            <canvas id="confidenceChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detailed-results">
+                    <h4>Detailed Results</h4>
+                    <div class="results-table">
+                        <table id="results-table">
+                            <thead>
+                                <tr>
+                                    <th>Article Preview</th>
+                                    <th>Prediction</th>
+                                    <th>Confidence</th>
+                                    <th>Fake Probability</th>
+                                    <th>Real Probability</th>
+                                </tr>
+                            </thead>
+                            <tbody id="results-body">
+                                <!-- Results will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analysis-tips">
+                <h3>Analysis Tips</h3>
+                <div class="tips-grid">
+                    <div class="tip-card">
+                        <i class="fas fa-text-height"></i>
+                        <h4>Text Length</h4>
+                        <p>Articles with at least 100 characters provide more accurate results</p>
+                    </div>
+                    <div class="tip-card">
+                        <i class="fas fa-language"></i>
+                        <h4>Language Quality</h4>
+                        <p>Well-written articles with proper grammar are easier to analyze</p>
+                    </div>
+                    <div class="tip-card">
+                        <i class="fas fa-clipboard-check"></i>
+                        <h4>Content Type</h4>
+                        <p>News articles work best. Avoid social media posts or informal text</p>
+                    </div>
+                    <div class="tip-card">
+                        <i class="fas fa-lightbulb"></i>
+                        <h4>Context Matters</h4>
+                        <p>Include complete sentences and proper context for better accuracy</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let distributionChart, confidenceChart;
+
+document.addEventListener('DOMContentLoaded', function() {
+    const batchText = document.getElementById('batch-text');
+    const batchAnalyzeBtn = document.getElementById('batch-analyze-btn');
+    const batchResults = document.getElementById('batch-results');
+    const articleCount = document.getElementById('article-count');
+
+    batchText.addEventListener('input', function() {
+        const articles = this.value.split('\n').filter(article => article.trim().length > 0);
+        articleCount.textContent = articles.length;
+        batchAnalyzeBtn.disabled = articles.length === 0;
+    });
+
+    batchAnalyzeBtn.addEventListener('click', function() {
+        const articles = batchText.value.split('\n').filter(article => article.trim().length > 0);
+        
+        if (articles.length === 0) {
+            alert('Please enter at least one article to analyze.');
+            return;
+        }
+
+        batchAnalyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Analyzing...';
+        batchAnalyzeBtn.disabled = true;
+
+        fetch('/batch_predict', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                texts: articles
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                displayBatchResults(data);
+            } else {
+                throw new Error(data.error || 'Batch analysis failed');
+            }
+        })
+        .catch(error => {
+            alert('Error: ' + error.message);
+        })
+        .finally(() => {
+            batchAnalyzeBtn.innerHTML = '<i class="fas fa-chart-bar"></i> Analyze All Articles';
+            batchAnalyzeBtn.disabled = false;
+        });
+    });
+
+    function displayBatchResults(data) {
+        batchResults.style.display = 'block';
+
+        document.getElementById('total-articles').textContent = data.total_analyzed;
+        document.getElementById('real-articles').textContent = data.real_count;
+        document.getElementById('fake-articles').textContent = data.fake_count;
+        
+        const avgConfidence = data.results.reduce((sum, result) => sum + result.confidence, 0) / data.results.length;
+        document.getElementById('avg-confidence').textContent = (avgConfidence * 100).toFixed(1) + '%';
+
+        updateCharts(data);
+        
+        updateResultsTable(data.results);
+
+        batchResults.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function updateCharts(data) {
+        const ctx1 = document.getElementById('distributionChart').getContext('2d');
+        const ctx2 = document.getElementById('confidenceChart').getContext('2d');
+
+        // Destroy existing charts
+        if (distributionChart) distributionChart.destroy();
+        if (confidenceChart) confidenceChart.destroy();
+
+        // Distribution chart
+        distributionChart = new Chart(ctx1, {
+            type: 'doughnut',
+            data: {
+                labels: ['Real News', 'Fake News'],
+                datasets: [{
+                    data: [data.real_count, data.fake_count],
+                    backgroundColor: ['#10b981', '#ef4444'],
+                    borderWidth: 2,
+                    borderColor: '#1e293b'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        // Confidence chart
+        const confidenceRanges = {
+            'High (80-100%)': 0,
+            'Medium (60-79%)': 0,
+            'Low (0-59%)': 0
+        };
+
+        data.results.forEach(result => {
+            const confidence = result.confidence * 100;
+            if (confidence >= 80) confidenceRanges['High (80-100%)']++;
+            else if (confidence >= 60) confidenceRanges['Medium (60-79%)']++;
+            else confidenceRanges['Low (0-59%)']++;
+        });
+
+        confidenceChart = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(confidenceRanges),
+                datasets: [{
+                    label: 'Number of Articles',
+                    data: Object.values(confidenceRanges),
+                    backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            stepSize: 1
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    function updateResultsTable(results) {
+        const tbody = document.getElementById('results-body');
+        tbody.innerHTML = '';
+
+        results.forEach(result => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${result.text}</td>
+                <td>
+                    <span class="prediction-badge ${result.prediction === 'Fake News' ? 'fake' : 'real'}">
+                        ${result.prediction}
+                    </span>
+                </td>
+                <td>${(result.confidence * 100).toFixed(1)}%</td>
+                <td>${(result.fake_probability * 100).toFixed(1)}%</td>
+                <td>${(result.real_probability * 100).toFixed(1)}%</td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+});
+</script>
+{% endblock %}

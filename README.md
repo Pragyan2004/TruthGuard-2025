@@ -7,53 +7,29 @@ This repository contains full model training scripts, TF-IDF + Logistic Regressi
 # Project Structure
 
 TruthGard-2025
-
 │
-
-├── app.py
-     
+├── app.py    
 │
-
 ├── templates/
-
 │   ├── index.html
-
 │   ├── detector.html
-
 │   ├── analysis.html
-
 │   ├── about.html
-
 │   └── contact.html
-
 │
-
 ├── static/
-
 │   ├── css/
-
 │   └── js/
-
 │
-
 ├── Fake.csv 
-
 ├── True.csv 
-
 │
-
 ├── logistic_regression_model.pkl
-
 ├── tfidf_vectorizer.pkl
-
 ├── lstm_model.h5
-
 ├── tokenizer.pkl
-
 ├── all_models.pkl
-
 │
-
 └── README.md
 
 ---

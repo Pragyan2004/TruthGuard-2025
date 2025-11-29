@@ -16,32 +16,96 @@ This repository contains full model training scripts, TF-IDF + Logistic Regressi
 
 ---
 
-📦 Fake-News-Detection
-│
-├── app.py # Flask Application
-├── fake_news_training.py # Training Script/Notebook
-│
-├── templates/ # UI Pages
-│ ├── index.html
-│ ├── detector.html
-│ ├── analysis.html
-│ ├── about.html
-│ └── contact.html
-│
-├── static/ # Static Assets
-│ ├── css/
-│ └── js/
-│
-├── Fake.csv # Fake News Dataset
-├── True.csv # Real News Dataset
-│
-├── logistic_regression_model.pkl
-├── tfidf_vectorizer.pkl
-├── lstm_model.h5
-├── tokenizer.pkl
-├── all_models.pkl # Saved trained Models
-│
-└── README.md # Documentation
+
+Here is a **complete README.md (GitHub formatted)** for your Fake News Detection Project including features, setup, model details, API endpoints, usage, contribution guidelines, and a dedicated **Screenshots section** for you to attach images later.
+
+---
+
+# 📰 Fake News Detection System using ML & Deep Learning
+
+A complete end-to-end Fake News Detection system built using **Machine Learning + Deep Learning + Flask API**.
+This repository contains full model training scripts, TF-IDF + Logistic Regression model, LSTM neural network model, visualization reports, and a web app with real-time prediction support.
+
+---
+
+## 🌟 Features
+
+| Feature                          | Description                                                       |
+| -------------------------------- | ----------------------------------------------------------------- |
+| 🔍 Real-time News Classification | Detect whether news is *Real* or *Fake* instantly                 |
+| 🧠 Multiple Models               | Logistic Regression, Naive Bayes, SVM, LSTM                       |
+| 📊 Advanced NLP                  | Lemmatization, Tokenization, Stop-word removal                    |
+| 📁 Supports API requests         | `/predict` for single & `/batch_predict` for multiple text inputs |
+| 🖥 Flask Web App                 | Beautiful UI – Home, Detector, Dashboard, Contact pages           |
+| 📈 Visualizations                | Training metrics, confusion matrix, model comparison              |
+| 💾 Model Saving                  | Pickle + TensorFlow SavedModel + Joblib bundling                  |
+
+---
+
+## 📂 Project Structure
+
+```
+├── app.py                          
+├── model_training.py                
+├── logistic_regression_model.pkl    
+├── tfidf_vectorizer.pkl             
+├── lstm_model.h5                    
+├── tokenizer.pkl                    
+├── all_models.pkl                   
+├── Fake.csv                        
+├── True.csv                         
+├── templates/
+│   ├── index.html
+│   ├── detector.html
+│   ├── analysis.html
+│   ├── about.html
+│   ├── contact.html
+└── README.md
+```
+
+---
+
+## 🏗 Installation & Setup
+
+### 1️⃣ Clone Repository
+
+```bash
+git clone https://github.com/your-username/fake-news-detection.git
+cd fake-news-detection
+```
+
+### 2️⃣ Install Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3️⃣ Run Flask App
+
+```bash
+python app.py
+```
+
+Server will start at: **[http://127.0.0.1:5000](http://127.0.0.1:5000)**
+
+---
+
+## 🧪 Model Training & Evaluation
+
+Models implemented:
+
+| Model               | Vectorizer            | Type           | Performance                        |
+| ------------------- | --------------------- | -------------- | ---------------------------------- |
+| Logistic Regression | TF-IDF                | Traditional ML | ⭐ Best Accuracy                    |
+| Naive Bayes         | TF-IDF                | Lightweight ML | Fast & Efficient                   |
+| SVM                 | TF-IDF                | ML             | Strong margin-based classification |
+| LSTM                | Tokenizer + Embedding | Deep Learning  | Sequential text understanding      |
+
+Training Script Included ➤ *(automatically saves trained models)*
+
+```bash
+python model_training.py
+```
 ---
 # Features
 

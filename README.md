@@ -1,4 +1,4 @@
-<img width="1220" height="720" alt="Screenshot 2025-11-29 120456" src="https://github.com/user-attachments/assets/6c5fc3b9-6840-40f6-bb81-66d97ca6ba0e" /># TruthGuard-2025
+# TruthGuard-2025
 
 A complete end-to-end Fake News Detection system built using Machine Learning + Deep Learning + Flask API.
 This repository contains full model training scripts, TF-IDF + Logistic Regression model, LSTM neural network model, visualization reports, and a web app with real-time prediction support.
@@ -7,30 +7,53 @@ This repository contains full model training scripts, TF-IDF + Logistic Regressi
 # Project Structure
 
 TruthGard-2025
+
 │
-├── app.py                   
-├── fake_news_training.py     
+
+├── app.py
+     
 │
+
 ├── templates/
+
 │   ├── index.html
+
 │   ├── detector.html
+
 │   ├── analysis.html
+
 │   ├── about.html
+
 │   └── contact.html
+
 │
+
 ├── static/
+
 │   ├── css/
+
 │   └── js/
+
 │
-├── Fake.csv                  
-├── True.csv                  
+
+├── Fake.csv 
+
+├── True.csv 
+
 │
+
 ├── logistic_regression_model.pkl
+
 ├── tfidf_vectorizer.pkl
+
 ├── lstm_model.h5
+
 ├── tokenizer.pkl
+
 ├── all_models.pkl
+
 │
+
 └── README.md
 
 ---
@@ -105,6 +128,9 @@ Models implemented:
 # Future Improvements
 
 🔹 Add BERT / RoBERTa transformer model
+
 🔹 Chrome browser extension for instant detection
+
 🔹 Deploy on AWS / Render / Railway
+
 🔹 Real-time scraping + news credibility score
